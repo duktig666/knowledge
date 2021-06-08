@@ -672,7 +672,7 @@ String s = input.readLine();
 
 ### 13.equals与==
 
-#### ==
+#### 13.1 ==
 
 > 它的作⽤是判断两个对象的地址是不是相等。即，判断两个对象是不是同⼀个对象(基本数据类型==⽐较的是值，引⽤数据类型==⽐较的是内存地址)。
 
@@ -680,7 +680,7 @@ String s = input.readLine();
 2. 两边的操作数必须是同一类型的（可以是父子类之间）才能编译通过。
 3. 比较的是地址，如果是具体的阿拉伯数字的比较，值相等则为`true`，如：`int a=10` 与 `long b=10L` 与 `double c=10.0`都是相同的（为true），因为**他们都指向地址为10的堆**。 
 
-#### equals()
+#### 13.2 equals()
 
 > equals() : 它的作⽤也是判断两个对象是否相等。但它⼀般有两种使⽤情况：
 >
@@ -690,9 +690,28 @@ String s = input.readLine();
 1. equals用来比较的是两个对象的内容是否相等，由于所有的类都是继承自java.lang.Object类的，所以适用于所有对象，如果没有对该方法进行覆盖的话，调用的仍然是Object类中的方法，而Object中的equals方法返回的却是==的判断。
 2. 所有比较是否相等时，都是用equals 并且在对常量相比较时，把常量写在前面，因为使用object的equals  object可能为`null`则空指针
 
-#### 对象的相等与指向他们的引⽤相等,两者有什么不同? 
+#### 13.3 对象相等与指向他们的引⽤相等,两者有什么不同?
 
 对象的相等，⽐的是内存中存放的内容是否相等。⽽引⽤相等，⽐较的是他们指向的内存地址是否相等。
+
+#### 13.4 使用 == 比较枚举类型
+
+由于枚举类型确保JVM中仅存在一个常量实例，因此我们可以安全地使用 `==` 运算符比较两个变量，如上例所示；此外，`==` 运算符可提供编译时和运行时的安全性。
+
+首先，让我们看一下以下代码段中的运行时安全性，其中 `==` 运算符用于比较状态，并且如果两个值均为null 都不会引发 NullPointerException。相反，如果使用equals方法，将抛出 NullPointerException：
+
+```java
+Pizza.PizzaStatus pizza = null;
+System.out.println(pizza.equals(Pizza.PizzaStatus.DELIVERED));//空指针异常
+System.out.println(pizza == Pizza.PizzaStatus.DELIVERED);//正常运行
+```
+
+对于编译时安全性，我们看另一个示例，两个不同枚举类型进行比较：
+
+```java
+if (Pizza.PizzaStatus.DELIVERED.equals(TestColor.GREEN)); // 编译正常
+if (Pizza.PizzaStatus.DELIVERED == TestColor.GREEN);      // 编译失败，类型不匹配
+```
 
 ### 14.Java ⾯向对象编程三⼤特性: 封装、继承、多态
 
@@ -1700,7 +1719,7 @@ public class Demo04Comparator {
 }
 ```
 
-#### 24.3 区别
+####  24.3 区别
 
 Comparable & Comparator 都是用来实现集合中的排序的，只是 Comparable 是在对象内部定义的方法实现的排序，Comparator 是在集合外部实现的排序。 
 
@@ -1711,3 +1730,61 @@ Comparable & Comparator 都是用来实现集合中的排序的，只是 Compara
     可以通过Comparator 来实现比较算法进行排序。
 
 3)  Comparator为了使用不同的排序规则做准备。比如：升序、降序或按不同的属性进行排序。
+
+### 25.BigDecimal
+
+#### 25.1 BigDecimal 的用处
+
+《阿里巴巴Java开发手册》中提到：**浮点数之间的等值判断，基本数据类型不能用==来比较，包装数据类型不能用 equals 来判断。** 具体原理和浮点数的编码方式有关，这里就不多提了，我们下面直接上实例：
+
+```java
+float a = 1.0f - 0.9f;
+float b = 0.9f - 0.8f;
+System.out.println(a);// 0.100000024
+System.out.println(b);// 0.099999964
+System.out.println(a == b);// false
+```
+
+具有基本数学知识的我们很清楚的知道输出并不是我们想要的结果（**精度丢失**），我们如何解决这个问题呢？一种很常用的方法是：**使用 BigDecimal 来定义浮点数的值，再进行浮点数的运算操作。**
+
+```java
+BigDecimal a = new BigDecimal("1.0");
+BigDecimal b = new BigDecimal("0.9");
+BigDecimal c = new BigDecimal("0.8");
+
+BigDecimal x = a.subtract(b); 
+BigDecimal y = b.subtract(c); 
+
+System.out.println(x); /* 0.1 */
+System.out.println(y); /* 0.1 */
+System.out.println(Objects.equals(x, y)); /* true */
+```
+
+#### 25.2 BigDecimal 的大小比较
+
+`a.compareTo(b)` : 返回 -1 表示 `a` 小于 `b`，0 表示 `a` 等于 `b` ， 1表示 `a` 大于 `b`。
+
+```java
+BigDecimal a = new BigDecimal("1.0");
+BigDecimal b = new BigDecimal("0.9");
+System.out.println(a.compareTo(b));// 1
+```
+
+#### 25.3 BigDecimal 保留几位小数
+
+通过 `setScale`方法设置保留几位小数以及保留规则。保留规则有挺多种，不需要记，IDEA会提示。
+
+```java
+BigDecimal m = new BigDecimal("1.255433");
+BigDecimal n = m.setScale(3,BigDecimal.ROUND_HALF_DOWN);
+System.out.println(n);// 1.255
+```
+
+#### 25.4 BigDecimal 的使用注意事项
+
+注意：我们在使用BigDecimal时，为了防止精度丢失，推荐使用它的 **BigDecimal(String)** 构造方法来创建对象。《阿里巴巴Java开发手册》对这部分内容也有提到如下图所示。
+
+<img src="https://gitee.com/koala010/typora/raw/master/img/BigDecimal 的使用注意事项.png" alt="image-20210606154600110" style="zoom:80%;" />
+
+
+
