@@ -27,5 +27,21 @@
 
 
 
+## 2. 多线程常见面试题
 
+### 2.1 基础
+
+参看：[Java多线程基础](https://duktig.cn/archives/31/)
+
+### 2.2 synchroniced关键字
+
+参看：[深入理解synchroniced关键字](https://duktig.cn/archives/42/)
+
+### 2.3 volatile关键字
+
+参看：[深入理解volatile关键字](https://duktig.cn/archives/46/)
+
+### 2.4 ThreadLocal
+
+参看：[万字详解ThreadLocal关键字](https://snailclimb.gitee.io/javaguide/#/docs/java/multi-thread/%E4%B8%87%E5%AD%97%E8%AF%A6%E8%A7%A3ThreadLocal%E5%85%B3%E9%94%AE%E5%AD%97)
 
