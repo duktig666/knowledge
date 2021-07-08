@@ -1,0 +1,309 @@
+# Java常用算法基础总结
+
+## 数
+
+### 1.固定位数的数的运算
+
+如果进行数的运算可能会超出int或者long的范围，而且只针对于后几位的数进行运算的话，那么可以通过使用取模，来只对后边几位的数进行运算，因为后边的几位的数，是不会变的。
+
+实例：
+
+```java
+int sum = temp1 + temp2 + temp3;
+//无论怎么运算，只取后四位数的结果，这样sum是不会超出int和long的数据范围的
+sum %= 10000;
+```
+
+### 2.数字某一位的校验
+
+对于数字某一位数的校验，常规的思路一般有两种：①数的数学运算 ②字符校验
+
+字符校验实例：
+
+```java
+//检验是否含有“2”或“4”的方法，若含有返回false
+public static boolean check(String s) {
+    //若含有“2”或“4”则返回false
+    if (s.contains("2") || s.contains("4")) {
+        return false;
+    }
+    return true;
+}
+
+//将int转为Sting然后在调用check的方法
+check(String.valueOf(k));
+```
+
+数的运算实例：
+
+```java
+public static boolean check(int k){
+    while(k>0){
+        if(k%10==2||k%10==4){
+            return true;
+        }
+        k/=10;
+    }
+    return false;
+}
+```
+
+### 3.将int类型的数字转为二进制，位数不足时补0
+
+```java
+/**
+ * 将一个int数字转换为二进制的字符串形式。
+ * @param num 需要转换的int类型数据
+ * @param digits 要转换的二进制位数，位数不足则在前面补0
+ * @return 二进制的字符串形式
+ */
+public static String toBinary(int num, int digits) {
+    int value = 1 << digits | num;
+    //保证这个string长度是digits位数
+    String bs = Integer.toBinaryString(value);
+    return  bs.substring(1);
+}
+```
+
+### 4.判断是否为素数（质数）
+
+> ​	素数：在大于1的自然数中，除了1和它本身以外不再有其他因数的自然数
+
+
+```java
+static boolean isPrime(int num) {
+    for (int i = 2; i * i <= num; i++) {
+        if (num % i == 0) {
+            return false;
+        }
+    }
+    return true;
+}
+```
+
+使用`i * i <= num`可以提升一定的效率。等于从1开始小的数乘以大的数，其实后的数已经计算过了。以num为11举例，1 * 11、2 没有、3没有、到4其实已经可以结束了，比如到5，最理想的还是与2相乘，其实前边在对2计算的时候已经计算过了。
+
+故只需要用`i * i <= num`进行判断就好了。
+
+### 5.分解质因数
+
+使用map储存分解的质因数，从2开始相除，循环相除与i，对i进行取余。
+
+```java
+static Map<Integer, Integer> primeFactor(int num) {
+    Map<Integer, Integer> map = new HashMap<>();
+    for (int i = 2; i <= num; i++) {
+        while (num % i == 0) {
+            if (map.containsKey(i)) {
+                map.put(i, map.get(i) + 1);
+            } else {
+                map.put(i, 1);
+            }
+            num /= i;
+        }
+    }
+    return map;
+}
+```
+
+**输出所得到的的质因数**
+
+将map中所的键乘以值，即可得到所有的质因数。质因数相乘等于num。
+
+```java
+static void printPrime(int num, Map<Integer, Integer> map) {
+    StringBuilder sb = new StringBuilder();
+    for (int k : map.keySet()) {
+        int v = map.get(k);
+        for (int i = 0; i < v; i++) {
+            sb.append("*").append(k);
+        }
+    }
+    System.out.println(num + "=" + sb.substring(1));
+}
+```
+
+### 6.两个数的乘积 = 最大公约数 x 最小公倍数
+
+#### 遍历法求最大公约数
+
+从2开始遍历，每次a和b都能被整除（取余）时记录下来。
+
+```java
+public static int minNumber1(int a, int b) {
+    int temp = 0;
+    for (int i = 2; i <= a && i <= b; i++) {
+        if (a % i == 0 && b % i == 0) {
+            temp = i;
+        }
+    }
+    return temp;
+}
+```
+
+#### 辗转相除法求最大公约数
+
+a对b取余，b赋值给a 余数赋值给b，，直到 b == 0
+
+```java
+public static int minNumber2(int a, int b) {
+    int temp = 1;
+    do{
+        temp = a % b ;
+        a = b;
+        b = temp;
+    }while(b != 0);
+    return a;
+}
+```
+
+#### 求最小公倍数
+
+两数乘积/最大公约数=最小公倍数
+
+### 7.排列组合
+
+参考博客：[https://zhuanlan.zhihu.com/p/41855459](https://zhuanlan.zhihu.com/p/41855459)
+
+**排列：**
+
+![image-20201016211645523](https://gitee.com/koala010/typora/raw/master/img/image-20201016211645523.png)
+
+**组合：**
+
+![image-20201016211712717](https://gitee.com/koala010/typora/raw/master/img/image-20201016211712717.png)
+
+
+
+## 字符串
+
+### 1.字母图形（字符串截取）
+
+对于特殊图形类的题，找出图形规律，可以使用字符串来进行解决。
+
+示例：
+
+利用字母可以组成一些美丽的图形，下面给出了一个例子：
+
+ABCDEFG
+
+BABCDEF
+
+CBABCDE
+
+DCBABCD
+
+EDCBABC
+
+这是一个5行7列的图形，请找出这个图形的规律，并输出一个n行m列的图形。
+
+
+
+分析：字母输出的图形是有规律的。首先字母都是A~Z，第一行从A开始向后输出m个字母，之后每行从第m个字符开始向左从A输出，向右也从A输出。
+
+可以使用一个字符串常量，操作索引和字符串截取解题。
+
+```java
+void solve () {
+    Scanner in = new Scanner(System.in);
+    int n = in.nextInt();
+    int m = in.nextInt();
+    in.close();
+    String str = "ZYXWVUTSRQPONMLKJIHGFEDCBABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for (int i = 0; i < n; i++) {
+        System.out.println(str.substring((25 - i), (25 - i + m)));
+    }
+
+}
+```
+
+关键就在`str.substring((25 - i), (25 - i + m))`。`(25 - i)`代表从哪里开始截取，每向下一行，字符串截取索引向左移动一位。
+
+
+
+
+
+## 类型转换
+
+### 1.char类型与int类型转换（ASCII）
+
+#### int转char
+
+```java
+int a = 'a' + 0;
+System.out.println(a); // 97
+```
+
+#### char转int
+
+```java
+char a = (char)97;
+System.out.println(a); // a
+```
+
+
+
+## 数组
+
+### 1.利用数组索引，解决算法问题
+
+可以将数组的索引看作是有意义的数字，可以将index当做类似于map的键，然后通过其值来解决问题。
+
+### 2.数组中交换两个元素的位置
+
+```java
+private static void swap ( int[] arr, int i, int j ) {
+    int tmp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = tmp;
+}
+```
+
+
+
+## 矩阵
+
+### 1.矩阵乘法
+
+矩阵乘法只有在第一个矩阵的列数（column）和第二个矩阵的行数（row）相同时才有意义。
+
+**计算方法：**
+
+![image-20201016110407159](https://gitee.com/koala010/typora/raw/master/img/image-20201016110407159.png)
+
+**代码计算：**
+
+定义两个二维数组，一个数组的行和另一个数组的列数相同。
+
+```java
+//m次幂
+int[][] arrA = new int[m][s];
+int[][] arrB = new int[s][n];
+
+//算法
+int[][] arrC = new int[m][n];
+for (int i = 0; i < m; i++) {
+	for (int j = 0; j < n; j++) {
+		for (int k = 0; k < s; k++) {
+			arrC[i][j] += arrA[i][k] * arrB[k][j];
+		}
+	}
+}
+```
+
+
+
+# 技巧总结
+
+## 循环
+
+### 1.善用while循环
+
+- for循环和while的区别；for循环每次执行完就要+1，而while则可以自己控制。
+
+- 对于每次执行，不想+1，还想在当前位置执行操作的可以使用while循环，当满足预期条件时在+1。
+
+- 不要傻傻地每次一用循环就用for循环
+
+
+

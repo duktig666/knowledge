@@ -1,0 +1,85 @@
+## MybatisPlus使用技巧
+
+### 1.自定义填充策略
+
+#### 维护创建时间和更新时间
+
+目前只能维护MybatisPlus底层封装的语句，自定义mapper的sql不能维护这个时间
+
+### 维护高频使用字段
+
+## 2.Wrapper的Lambda使用
+
+使用MybatisPlus的Lambda，可以使代码操作与数据库解耦，而是与实体类的映射相关
+
+### QueryWrapper和UpdateWrapper使用
+
+```java
+QueryWrapper<ObjectUser> userQueryWrapper = new QueryWrapper<>();
+//（用户id需要之后动态获取）
+userQueryWrapper.lambda().eq(ObjectUser::getUserId, userId).eq(ObjectUser::getIsRead, 0).orderByDesc(ObjectUser::getCreatedAt);
+```
+
+wrapper通过直接.lambda()后，使用lambda()操作。
+
+
+
+### LambdaQueryWrapper和LambdaUpdateWrapper
+
+可以直接，也只能使用lambda()操作
+
+
+
+## 3.setSql的应用
+
+### 某一字段值，执行计算
+
+例如，值+1操作
+
+```java
+UpdateWrapper<Object> updateObjectWrapper = new UpdateWrapper<>();
+updateObjectWrapper.lambda().setSql("view_count=(view_count+1)").eq(Object::getId, objId);
+```
+
+
+
+## 4.自定义sql的分页
+
+只需要传入IPage对象，可以自动实现，并且维护分页的实现
+
+```java
+/**
+ * description:根据用户id，分页查询用户通知列表
+ *
+ * @param page      分页
+ * @param orgUserId 用户id
+ * @return UserObjectBO 封装的用户列表信息
+ * @author RenShiWei
+ * Date: 2020/7/12 20:24
+ */
+@Select("SELECT ou.obj_id,ou.user_id,ou.`option`,ou.option_time,ou.check_time,ou.view_time,ou.is_read FROM object_user ou LEFT JOIN object ON object.id=ou.obj_id  WHERE (user_id=#{orgUserId} OR owner_id=#{orgUserId}) and ou.status=0 ORDER BY object.created_at DESC")
+@Results({
+        @Result(id = true, column = "id", property = "id"),
+        @Result(column = "user_id", property = "userId"),
+        @Result(column = "option_time", property = "optionTime"),
+        @Result(column = "check_time", property = "checkTime"),
+        @Result(column = "view_time", property = "viewTime"),
+        @Result(column = "obj_id", property = "object",
+                one = @One(select = "com.xiaoyun.api.mapper.ObjectMapper.getObjectByDesc",
+                        fetchType = FetchType.EAGER)),
+})
+List<UserObjectBO> getUserObject(IPage<UserObjectBO> page, Integer orgUserId);
+```
+
+
+
+## 5.代码生成
+
+
+
+
+
+
+
+
+
