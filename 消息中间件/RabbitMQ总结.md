@@ -59,3 +59,15 @@ X（Exchanges）：交换机一方面：接收生产者发送的消息。另一�
 
 具体使用可参看：[rabbitmq五种消息模型整理](https://www.cnblogs.com/ifme/p/12024064.html)
 
+## 2. RabbitMQ与Kafla对比
+
+参看：[面试官：RabbitMQ 和 Kafka选哪个？](https://zhuanlan.zhihu.com/p/161224418)
+
+## 3. RabbitMQ常见面试题
+
+[如果面试问RabbitMQ，你可以吊打他 ！](https://zhuanlan.zhihu.com/p/62087283)
+
+
+
+
+
