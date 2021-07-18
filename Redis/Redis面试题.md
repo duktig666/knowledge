@@ -1295,6 +1295,8 @@ redis cluster中主节点故障处理方式与哨兵模式较为相像，当约�
 
 当集群中要删除节点时，只需要将节点中的所有哈希槽移动到其它节点，然后再移除空白（不包含任何哈希槽）的节点就可以了。
 
+一致性hash解决每个节点都要进行数据变更的问题：[Redis分布式算法原理—Hash一致性理解](https://blog.csdn.net/wlccomeon/article/details/86553831)
+
 ## 参考：
 
 - [吃透这份Redis学习笔记，直接把阿里面试官按在地上摩擦！](https://zhuanlan.zhihu.com/p/354314607) （Redis常见面试题，全面）
