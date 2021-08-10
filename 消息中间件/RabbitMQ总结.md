@@ -67,7 +67,7 @@ X（Exchanges）：交换机一方面：接收生产者发送的消息。另一�
 
 [如果面试问RabbitMQ，你可以吊打他 ！](https://zhuanlan.zhihu.com/p/62087283)
 
+## 4. 为什么使用消息队列？
 
-
-
+[为什么使用消息队列？](https://zhuanlan.zhihu.com/p/372485966)
 
