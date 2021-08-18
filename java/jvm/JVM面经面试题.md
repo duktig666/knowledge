@@ -585,15 +585,19 @@ JVM 中内置了三个重要的 ClassLoader，除了 BootstrapClassLoader 其他
 
 除了 `BootstrapClassLoader` 其他类加载器均由 Java 实现且全部继承自`java.lang.ClassLoader`。如果我们要自定义自己的类加载器，很明显需要继承 `ClassLoader`。
 
-## 6. 垃圾收集器CMS和G1的区别
-
-暂时参考：https://blog.csdn.net/tushuping/article/details/103927644 后续总结
 
 
+## 6. JVM参数调优
+
+查看：[JVM系列三:JVM参数设置、分析](https://www.cnblogs.com/redcreen/archive/2011/05/04/2037057.html)
 
 
 
 
+
+## 参看
+
+- [学习JVM是如何从入门到放弃的？](https://www.jianshu.com/p/904b15a8281f) （很多东西总结的还是挺全的）
 
 
 
