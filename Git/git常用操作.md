@@ -71,3 +71,12 @@ git config --global i18n.logoutputencoding utf-8
 
 [Git for windows 中文乱码解决方案](https://www.cnblogs.com/ayseeing/p/4203679.html)
 
+
+
+## git在.gitignore添加忽略文件不起作用
+
+```shell
+git rm -r --cached .
+```
+
+重新`add`和`commit`即可解决
