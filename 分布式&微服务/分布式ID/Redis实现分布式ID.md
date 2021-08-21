@@ -4,6 +4,10 @@
 
 本篇文章着重介绍 **Redis生成分布式ID**
 
+
+
+源码参看：[https://github.com/duktig666/distributed-programme](https://github.com/duktig666/distributed-programme)
+
 # Redis实现分布式ID分析
 
 关于分布式ID的基本要求和背景不在赘述。

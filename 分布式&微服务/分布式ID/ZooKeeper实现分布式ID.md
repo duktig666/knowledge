@@ -6,6 +6,10 @@
 
 本篇文章着重介绍 **ZooKeeper生成分布式ID**
 
+
+
+源码参看：[https://github.com/duktig666/distributed-programme](https://github.com/duktig666/distributed-programme)
+
 # ZooKeeper实现分布式ID分析
 
 **ZooKeeper分布式ID生成,原理是利用ZooKeeper的临时有序节点，生成全局唯一的ID**。

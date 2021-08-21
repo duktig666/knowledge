@@ -20,10 +20,12 @@
 **ID号生成系统的可用性要求**
 
 1. 高可用：发一个获取分布式ID的请求，服务器就要保证99.999%的情况下给我创建一个唯一分布式ID。
-
 2. 低延迟：发一个获取分布式ID的请求，服务器就要快，极速。
-
 3. 高QPS：假如并发一口气10万个创建分布式ID请求同时杀过来，服务器要顶的住且一下子成功创建10万个分布式ID。
+
+
+
+源码参看：[https://github.com/duktig666/distributed-programme](https://github.com/duktig666/distributed-programme)
 
 ## 常用方案
 
