@@ -115,6 +115,10 @@ IoC的思想最核心的地方在于，==资源不由使用资源的双方管理
 
 **第二，降低了使用资源双方的依赖程度，也就是我们说的耦合度**。
 
+
+
+参看：[《Spring》IOC实现原理](https://www.jianshu.com/p/ad05cfe7868e) （依赖倒置、控制反转、依赖注入思想上分析）
+
 ## Spring核心AOP
 
 > OOP(Object-Oriented Programming)面向对象编程，允许开发者定义纵向的关系，导致了大量代码的重复，而不利于各个模块的重用。
@@ -226,7 +230,7 @@ request、session、application、websocket 和 global Session 作用域只能�
 xml 方式：
 
 ```xml
-<bean id="..." class="..." scope="singleton"></bean>Copy to clipboardErrorCopied
+<bean id="..." class="..." scope="singleton"></bean>
 ```
 
 注解方式：
@@ -757,7 +761,7 @@ public interface TransactionDefinition {
     // 返回是否为只读事务，默认值为 false
     boolean isReadOnly();
 
-}Copy to clipboardErrorCopied
+}
 ```
 
 对于只有读取数据查询的事务，可以指定事务类型为 readonly，即只读事务。只读事务不涉及数据的修改，数据库会提供一些优化手段，适合用在有多条数据库查询操作的方法中。
@@ -805,19 +809,66 @@ public interface TransactionDefinition {
 | readOnly    | 指定事务是否为只读事务，默认值为 false。                     |
 | rollbackFor | 用于指定能够触发事务回滚的异常类型，并且可以指定多个异常类型。 |
 
+#### @Transactional 事务注解原理
 
+**`@Transactional` 的工作机制是基于 AOP 实现的，AOP 又是使用动态代理实现的。如果目标对象实现了接口，默认情况下会采用 JDK 的动态代理，如果目标对象没有实现了接口,会使用 CGLIB 动态代理。**
 
+如果一个类或者一个类中的 public 方法上被标注`@Transactional` 注解的话，Spring 容器就会在启动的时候为其创建一个代理类，在调用被`@Transactional` 注解的 public 方法的时候，实际调用的是，`TransactionInterceptor` 类中的 `invoke()`方法。这个方法的作用就是在目标方法之前开启事务，方法执行过程中如果遇到异常的时候回滚事务，方法调用完成之后提交事务。
 
+#### **Spring AOP 自调用问题**
 
+**若同一类中的其他没有 `@Transactional` 注解的方法内部调用有 `@Transactional` 注解的方法，有`@Transactional` 注解的方法的事务会失效。**
 
+这是由于`Spring AOP`代理的原因造成的，因为只有当 `@Transactional` 注解的方法在类以外被调用的时候，Spring 事务管理才生效。
 
+`MyService` 类中的`method1()`调用`method2()`就会导致`method2()`的事务失效。
 
+```java
+@Service
+public class MyService {
+
+private void method1() {
+     method2();
+     //......
+}
+@Transactional
+ public void method2() {
+     //......
+  }
+}
+```
+
+解决办法就是避免同一类中自调用或者使用 AspectJ 取代 Spring AOP 代理。
+
+#### `@Transactional` 的使用注意事项总结
+
+1. `@Transactional` 注解只有作用到 public 方法上事务才生效，不推荐在接口上使用；
+2. 避免同一个类中调用 `@Transactional` 注解的方法，这样会导致事务失效；
+3. 正确的设置 `@Transactional` 的 rollbackFor 和 `propagation` 属性，否则事务可能会回滚失败
+
+### [@Transactional(rollbackFor = Exception.class)注解了解吗？](https://snailclimb.gitee.io/javaguide/#/docs/system-design/framework/spring/Spring常见问题总结?id=transactionalrollbackfor-exceptionclass注解了解吗？)
+
+`Exception` 分为运行时异常 `RuntimeException` 和非运行时异常。事务管理对于企业应用来说是至关重要的，即使出现异常情况，它也可以保证数据的一致性。
+
+当 `@Transactional` 注解作用于类上时，该类的所有 public 方法将都具有该类型的事务属性，同时，我们也可以在方法级别使用该标注来覆盖类级别的定义。如果类或者方法加了这个注解，那么这个类里面的方法抛出异常，就会回滚，数据库里面的数据也会回滚。
+
+在 `@Transactional` 注解中如果不配置`rollbackFor`属性,那么事务只会在遇到`RuntimeException`的时候才会回滚，加上 `rollbackFor=Exception.class`,可以让事务在遇到非运行时异常时也回滚。
 
 ## Spring的自动装配
 
 
 
+## Spring 框架中用到了哪些设计模式？
 
+- **工厂模式** : Spring 使用工厂模式通过 `BeanFactory`、`ApplicationContext` 创建 bean 对象。
+- **代理模式** : Spring AOP 功能的实现。
+- **单例模式** : Spring 中的 Bean 默认都是单例的。
+- **模板模式** : Spring 中 `jdbcTemplate`、`hibernateTemplate` 等以 Template 结尾的对数据库操作的类，它们就使用到了模板模式。
+- **包装器模式** : 我们的项目需要连接多个数据库，而且不同的客户在每次访问中根据需要会去访问不同的数据库。这种模式让我们可以根据客户的需求能够动态切换不同的数据源。
+- **观察者模式:** Spring 事件驱动模型就是观察者模式很经典的一个应用。
+- **适配器模式** : Spring AOP 的增强或通知(Advice)使用到了适配器模式、spring MVC 中也是用到了适配器模式适配`Controller`。
+
+参看：[面试官:“谈谈Spring中都用到了那些设计模式?”](https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&mid=2247485303&idx=1&sn=9e4626a1e3f001f9b0d84a6fa0cff04a&chksm=cea248bcf9d5c1aaf48b67cc52bac74eb29d6037848d6cf213b0e5466f2d1fda970db700ba41&token=255050878&lang=zh_CN#rd)
 
 
 
@@ -828,8 +879,10 @@ public interface TransactionDefinition {
 - [【spring大总结】希望所有看完这篇文章的C友，都能快速入门spring](https://blog.csdn.net/weixin_55932383/article/details/120088647?utm_source=app&app_version=4.14.0&code=app_1562916241&uLinkId=usr1mkqgl919blen)
 - [Spring面试题（2021最新版）](https://zhuanlan.zhihu.com/p/369115360)
 - [JavaGuide-Spring常见问题总结](https://snailclimb.gitee.io/javaguide/#/docs/system-design/framework/spring/Spring%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93)
-- 
-
+- [面试题系列：Spring 夺命连环10问](https://zhuanlan.zhihu.com/p/368769721)
+- [面试必问的 Spring，你懂了吗？](https://zhuanlan.zhihu.com/p/311373740)
+- [《Spring》IOC实现原理](https://www.jianshu.com/p/ad05cfe7868e) （依赖倒置、控制反转、依赖注入思想上分析）
+- [什么才叫懂Spring底层原理，这些面试题你都会吗](https://zhuanlan.zhihu.com/p/38484238)
 
 
 
