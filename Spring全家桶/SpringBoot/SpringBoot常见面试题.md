@@ -143,7 +143,7 @@ SpringBoot 的 jar 无法被其他项目依赖，主要还是他和普通 jar �
 
 # SpringBoot原理
 
-## SpringBoot 启动流程
+## SpringBoot 启动流程（需优化）
 
 1. 准备环境，根据不同的环境创建不同的Environment
 2. 准备、加载上下文，为不同的环境选择不同的Spring Context，然后加载资源，配置Bean
@@ -164,7 +164,7 @@ SpringBoot 的 jar 无法被其他项目依赖，主要还是他和普通 jar �
 
 ![SpringBoot自动配置原理 总结](https://cos.duktig.cn/typora/202109161008646.jpeg)
 
-详情参看：[SpringBoot自动装配原理.md](./SpringBoot自动装配原理.md) 
+详情参看：[SpringBoot自动装配和Starter原理.md](./SpringBoot自动装配和Starter原理.md) 
 
 
 
