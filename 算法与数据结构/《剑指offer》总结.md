@@ -1178,7 +1178,7 @@ int greedyPayment(int payMoney) {
 
 [https://leetcode-cn.com/problems/jian-sheng-zi-lcof/](https://leetcode-cn.com/problems/jian-sheng-zi-lcof/)
 
-### 思路
+**思路**
 
 推论参看：[https://leetcode-cn.com/problems/jian-sheng-zi-lcof/solution/mian-shi-ti-14-i-jian-sheng-zi-tan-xin-si-xiang-by/](https://leetcode-cn.com/problems/jian-sheng-zi-lcof/solution/mian-shi-ti-14-i-jian-sheng-zi-tan-xin-si-xiang-by/)
 
@@ -1198,7 +1198,7 @@ int greedyPayment(int payMoney) {
 >
 > **所以，尽可能以3进行切割，3切割完最后一段如果等于4，那么平分成2段。**
 
-### 代码实现
+**代码实现**
 
 可以统计次数最后再计算，也可以每次剪的时候就计算好。
 
@@ -1252,15 +1252,67 @@ public int cuttingRopeByGreedyDetail(int n) {
 
 
 
+# 位运算
 
+## 剑指offer15题——二进制中1的个数
 
+[https://leetcode-cn.com/problems/er-jin-zhi-zhong-1de-ge-shu-lcof/](https://leetcode-cn.com/problems/er-jin-zhi-zhong-1de-ge-shu-lcof/)
 
+### 方法一：循环检查二进制位
 
+**思路**：
 
+循环检查给定整数 n 的二进制位的每一位是否为 1 （二进制最高为2^31^-1，所以循环条件 < 32）
+缺点：无论二进制有多少个1，都要循环32次，虽然时间复杂度为O(1)，但是实际上还是有很大的优化空间
 
+**代码实现**：
 
+```java
+public int hammingWeight2(int n) {
+    int count = 0;
+    for (int i = 0; i < 32; i++) {
+        // 这里的判断条件不能是 == 1
+        if ((n & (1 << i)) != 0) {
+            count++;
+        }
+    }
+    return count;
+}
+```
 
+**注意**：
 
+**循环中的判断条件`(n & (1 << i))`不能是`==1`，必须要是`!=0`才行？**
 
+- 用`n=11`做测试，操作：`System.out.println((n & (1 << i)));`，当前位为1，发现输出的结果并不是1，而是`1,2,8`。
+- 又根据 `101 & 010 = 000 = 0`  和 `111 & 010 = 010 = 2`，所以确定高位为1时的条件应该为`(n & (1 << i)) != 0`。
 
+### 方法二：位运算优化
+
+**思路**：
+
+1. 最后一位是0，减1后，最后一位变成0，其他不变
+2. 最后一位不是0，假设最右边1位于m位，减去1，第m为变成0，m位之后都由0变成1，m位之前不变
+3. 减去1之后的数 与 n 进行取余，第m位之后的数变成0。 即结果： n最右边为1的位变成0
+
+所以，先减1，然后结果对n取余。
+
+举例：
+
+- `1100 -1 = 1011`
+- `1011 & 1100 = 1000`
+
+**代码实现**：
+
+```java
+public int hammingWeight(int n) {
+    int count = 0;
+    while (n != 0) {
+        ++ count;
+        // 可以简写为 n &= (n-1);
+        n = (n - 1) & n;
+    }
+    return count;
+}
+```
 
