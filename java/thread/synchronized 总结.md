@@ -4,6 +4,12 @@
 
 ## 2. 怎么使用 synchronized 关键字？
 
+**synchronized 锁的是什么？**
+
+- 对于普通同步方法，锁是当前实例对象。
+- 对于静态同步方法，锁是当前类的Class对象。
+- 对于同步代码块，锁是Synchonized括号里配置的对象。
+
 **synchronized 关键字最主要的三种使用方式：**
 
 **1.修饰实例方法:** 作用于当前对象实例加锁，进入同步代码前要获得 **当前对象实例的锁**
@@ -14,7 +20,7 @@ synchronized void method() {
 }
 ```
 
-**2.修饰静态方法:** 也就是给当前类加锁，会作用于类的所有对象实例 ，进入同步代码前要获得 **当前 class 的锁**。因为静态成员不属于任何一个实例对象，是类成员（ _static 表明这是该类的一个静态资源，不管 new 了多少个对象，只有一份_）。所以，如果一个线程 A 调用一个实例对象的非静态 `synchronized` 方法，而线程 B 需要调用这个实例对象所属类的静态 `synchronized` 方法，是允许的，不会发生互斥现象，**因为访问静态 `synchronized` 方法占用的锁是当前类的锁，而访问非静态 `synchronized` 方法占用的锁是当前实例对象锁**。
+**2.修饰静态方法:** 也就是给当前类加锁，会作用于类的所有对象实例 ，进入同步代码前要获得 **当前 Class对象 的锁**。因为静态成员不属于任何一个实例对象，是类成员（ _static 表明这是该类的一个静态资源，不管 new 了多少个对象，只有一份_）。所以，如果一个线程 A 调用一个实例对象的非静态 `synchronized` 方法，而线程 B 需要调用这个实例对象所属类的静态 `synchronized` 方法，是允许的，不会发生互斥现象，**因为访问静态 `synchronized` 方法占用的锁是当前类的锁，而访问非静态 `synchronized` 方法占用的锁是当前实例对象锁**。
 
 ```java
 synchronized static void method() {
@@ -22,7 +28,7 @@ synchronized static void method() {
 }
 ```
 
-**3.修饰代码块** ：指定加锁对象，对给定对象/类加锁。`synchronized(this|object)` 表示进入同步代码库前要获得**给定对象的锁**。`synchronized(类.class)` 表示进入同步代码前要获得 **当前 class 的锁**
+**3.修饰代码块** ：指定加锁对象，对给定对象/类加锁。`synchronized(this|object)` 表示进入同步代码库前要获得**给定对象的锁**。`synchronized(类.class)` 表示进入同步代码前要获得 **当前 Class对象 的锁**
 
 ```java
 synchronized(this) {
@@ -85,7 +91,11 @@ public class Singleton {
 
 ## 4.  synchronized 关键字的底层原理
 
+当一个线程试图访问同步代码块时，它首先必须得到锁，退出或抛出异常时必须释放锁。那么锁到底存在哪里呢？锁里面会存储什么信息呢？
+
 **synchronized 关键字底层原理属于 JVM 层面。**
+
+
 
 ### 4.1 synchronized 同步语句块的情况
 
@@ -105,7 +115,7 @@ public class SynchronizedDemo {
 
 从上面我们可以看出：
 
-**`synchronized` 同步语句块的实现使用的是 `monitorenter` 和 `monitorexit` 指令，其中 `monitorenter` 指令指向同步代码块的开始位置，`monitorexit` 指令则指明同步代码块的结束位置。**
+**`synchronized` 同步语句块的实现使用的是 `monitorenter` 和 `monitorexit` 指令，其中 `monitorenter` 指令指向同步代码块的开始位置，`monitorexit` 指令则指明同步代码块的结束位置/异常位置。**
 
 当执行 `monitorenter` 指令时，线程试图获取锁也就是获取 **对象监视器 `monitor`** 的持有权。
 
@@ -132,10 +142,6 @@ public class SynchronizedDemo2 {
 
 
 `synchronized` 修饰的方法并没有 `monitorenter` 指令和 `monitorexit` 指令，取得代之的确实是 `ACC_SYNCHRONIZED` 标识，该标识指明了该方法是一个同步方法。JVM 通过该 `ACC_SYNCHRONIZED` 访问标志来辨别一个方法是否声明为同步方法，从而执行相应的同步调用。
-
-##### 执行了什么样的同步调用？
-
-
 
 ### 4.3 总结
 
