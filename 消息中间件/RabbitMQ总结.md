@@ -1,8 +1,6 @@
 # RabbitMQ总结
 
-## 1. RabbitMQ的消息模型及使用场景分析
-
-### Hello World（基本）模型
+## 1. RabbitMQ的消息模型
 
 ### "Hello World"（基本）消息模型
 
