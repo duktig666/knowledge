@@ -1,3 +1,7 @@
+
+
+本文源码参看：[https://github.com/duktig666/learn-example/tree/5586febea31c2fb368e19fbdba11ed08afd463e0/Redis/src/main/java/cn/duktig/pubsub](https://github.com/duktig666/learn-example/tree/5586febea31c2fb368e19fbdba11ed08afd463e0/Redis/src/main/java/cn/duktig/pubsub)
+
 # Redis的发布订阅模式
 
 ## Redis发布订阅概述
