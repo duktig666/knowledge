@@ -19,11 +19,14 @@ Redis 客户端可以订阅任意数量的频道。
 
 **发布订阅相关的命令**：
 
-- subscribe： 订阅一个或者多个频道；
-- unsubscribe: 退订一个或者多个频道；
-- publish: 向通道发送消息；
-- psubscribe: 订阅给定模式相匹配的所有频道；
-- punsubscribe: 退订 给定模式所有的频道，若未指定模式，退订所有频道；
+| 命令                                                         | 描述                               |
+| :----------------------------------------------------------- | :--------------------------------- |
+| [Redis Unsubscribe 命令](https://www.redis.net.cn/order/3637.html) | 指退订给定的频道。                 |
+| [Redis Subscribe 命令](https://www.redis.net.cn/order/3636.html) | 订阅给定的一个或多个频道的信息。   |
+| [Redis Pubsub 命令](https://www.redis.net.cn/order/3633.html) | 查看订阅与发布系统状态。           |
+| [Redis Punsubscribe 命令](https://www.redis.net.cn/order/3635.html) | 退订所有给定模式的频道。           |
+| [Redis Publish 命令](https://www.redis.net.cn/order/3634.html) | 将信息发送到指定的频道。           |
+| [Redis Psubscribe 命令](https://www.redis.net.cn/order/3632.html) | 订阅一个或多个符合给定模式的频道。 |
 
 ## 发布订阅演示
 
