@@ -341,3 +341,4 @@ show status
 
 - [MySQL分库分表 看完吊打面试官](https://zhuanlan.zhihu.com/p/348659067)
 - [MySQL：互联网公司常用分库分表方案汇总！](https://zhuanlan.zhihu.com/p/137368446)
+- [大众点评订单系统分库分表实践](https://tech.meituan.com/2016/11/18/dianping-order-db-sharding.html)

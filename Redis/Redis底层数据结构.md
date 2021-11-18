@@ -276,7 +276,7 @@ Redis hash是一个string类型的field和value的映射表，hash特别适合�
 
 ### 数据结构
 
-Hash类型对应的数据结构是两种：ziplist（压缩列表），hashtable（哈希表）。当field-value长度较短且个数较少时，使用ziplist，否则使用dict。
+Hash类型对应的数据结构是两种：ziplist（压缩列表），dict（哈希表）。当field-value长度较短且个数较少时，使用ziplist，否则使用dict。
 
 ### Dict
 

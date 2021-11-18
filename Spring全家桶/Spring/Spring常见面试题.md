@@ -211,7 +211,7 @@ A对象的创建过程：
 
 2.A注入属性时，发现依赖B，转而去实例化B
 
-3.同样创建对象B，注入属性时发现依赖A，一次从一级到三级缓存查询A，从三级缓存通过对象工厂拿到A，把A放入二级缓存，同时删除三级缓存中的A，此时，B已经实例化并且初始化完成，把B放入一级缓存。
+3.同样创建对象B，注入属性时发现依赖A，依次从一级到三级缓存查询A，从三级缓存通过对象工厂拿到A，把A放入二级缓存，同时删除三级缓存中的A，此时，B已经实例化并且初始化完成，把B放入一级缓存。
 
 ![解决循环依赖流程2](https://cos.duktig.cn/typora/202109111625083.jpg)
 
@@ -444,7 +444,6 @@ request、session、application、websocket 和 global Session 作用域只能�
 
 ```java
 @Component
-
 public class Test {
 
  @Autowired

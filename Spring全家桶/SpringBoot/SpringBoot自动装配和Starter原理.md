@@ -47,7 +47,7 @@ SpringBoot之所以可以做到简化配置文件直接启动，无外乎是其�
 
 > **SPI** ，全称为 Service Provider Interface(服务提供者接口)，是一种服务发现机制。它通过在classpath路径下的`META-INF/services`文件夹查找文件，自动加载文件中所定义的类。
 
-> SpringBoot 定义了一套接口规范，这套规范规定：**SpringBoot 在启动时会扫描外部引用 jar 包中的`META-INF/spring.factories`文件，将文件中配置的类型信息加载到 Spring 容器**（此处涉及到 JVM 类加载机制与 Spring 的容器知识），**并执行类中定义的各种操作**。对于外部 jar 来说，只需要按照 SpringBoot 定义的标准，就能将自己的功能装置进 SpringBoot。
+> SpringBoot 定义了一套接口规范，这套规范规定：**SpringBoot 在启动时会扫描外部引用 jar 包中的`META-INF/spring.factories`文件，将文件中配置的类型信息加载到 Spring 容器**（此处涉及到 JVM 类 加载机制与 Spring 的容器知识），**并执行类中定义的各种操作**。对于外部 jar 来说，只需要按照 SpringBoot 定义的标准，就能将自己的功能装置进 SpringBoot。
 
 没有 Spring Boot 的情况下，如果我们需要引入第三方依赖，需要手动配置，非常麻烦。但是，Spring Boot 中，我们直接引入一个 starter 即可。引入 starter 之后，我们通过少量注解和一些简单的配置就能使用第三方组件提供的功能了。
 
@@ -642,7 +642,7 @@ SpringBoot的注解扫描的默认规则是SpringBoot的入口类所在包及其
 ```java
   object: 
     name: Object
-    blogurl: blog.objectspace.cnCOPY
+    blogurl: blog.objectspace.cn
 ```
 
 我们现在自己定义一个类去读取这个文件：
@@ -665,7 +665,7 @@ SpringBoot的注解扫描的默认规则是SpringBoot的入口类所在包及其
     public void setBlogUrl(String blogUrl) {
         this.blogUrl = blogUrl;
     }
-  }COPY
+  }
 ```
 
 然后我们在测试类中输出一下这个对象：
@@ -681,7 +681,7 @@ SpringBoot的注解扫描的默认规则是SpringBoot的入口类所在包及其
         System.out.println(testConfig.getBlogUrl());
     }
 
-  }COPY
+  }
 ```
 
 测试结果：
