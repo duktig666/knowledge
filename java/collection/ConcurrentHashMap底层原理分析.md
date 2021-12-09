@@ -75,7 +75,7 @@ class HashMapThread extends Thread {
 
 ![jdk1.8 HashMap死循环堆栈情况](https://cos.duktig.cn/typora/202109252012771.jpeg)
 
-从堆栈信息中可以看到出现死循环的位置，通过该信息可明确知道死循环发生在HashMap的扩容函数中，根源在**`transfer`函数**中，jdk1.7中HashMap的`transfer`函数如下：
+从堆栈信息中可以看到出现死循环的位置，通过该信息可明确知道死循环发生在HashMap的 **扩容函数** 中，根源在**`transfer`函数**中，jdk1.7中HashMap的`transfer`函数如下：
 
 ```java
 void transfer(Entry[] newTable, boolean rehash) {
