@@ -200,7 +200,7 @@ public class TestScheduleRedisPublishController {
 
 5、启动程序后的结果
 
-![结果](C:\Users\rsw\AppData\Roaming\Typora\typora-user-images\image-20211110215311726.png)
+![结果](https://cos.duktig.cn/typora/202112141953282.png)
 
 可以看到两个订阅者，都可以正常的接收消息。
 
