@@ -80,3 +80,23 @@ git rm -r --cached .
 ```
 
 重新`add`和`commit`即可解决
+
+
+
+## 多分支合并代码
+
+对于多分支的代码库，将代码从一个分支转移到另一个分支是常见需求。
+
+这时分两种情况。一种情况是，你需要另一个分支的所有代码变动，那么就采用合并（`git merge`）。另一种情况是，你只需要部分代码变动（某几个提交），这时可以采用 Cherry pick。
+
+```sh
+## 得到最新一次提交的commitHash（类似5b6612d84a7f401f4519b73f38348bc094ba5501）
+git log -n1 --format=format:"%H"
+## 可以查看所有的提交信息
+git log
+## Cherry pick 支持一次转移多个提交
+git cherry-pick <HashA> <HashB>
+```
+
+参看：[git cherry-pick 教程（阮一峰的网络日志）](http://www.ruanyifeng.com/blog/2020/04/git-cherry-pick.html)
+
