@@ -1471,4 +1471,5 @@ redis cluster中主节点故障处理方式与哨兵模式较为相像，当约�
 - [Redlock：Redis分布式锁最牛逼的实现](https://zhuanlan.zhihu.com/p/59256821)
 - [细说Redis分布式锁：setnx/redisson/redlock？了解一波？](https://zhuanlan.zhihu.com/p/111354065)
 - [redis集群搭建以及redis集群中添加新结点，重新分配哈希槽](https://blog.csdn.net/qq_36417677/article/details/104904306)
+- [Redis分布式锁 （图解-秒懂-史上最全）](https://www.cnblogs.com/crazymakercircle/p/14731826.html)
 
