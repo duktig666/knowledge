@@ -223,6 +223,30 @@ A对象的创建过程：
 
 因此，由于把实例化和初始化的流程分开了，所以如果都是用构造器的话，就没法分离这个操作，所以都是构造器的话就无法解决循环依赖的问题了。
 
+## Spring 启动时 循环依赖会出现什么问题？
+
+构造器参数循环依赖
+
+Spring容器会将每一个正在创建的 Bean 标识符放在一个**“当前创建Bean池”**中，Bean标识符在创建过程中将一直保持在这个池中，因此如果在创建Bean过程中发现自己已经在“当前创建Bean池”里时将抛出`BeanCurrentlyInCreationException`异常表示循环依赖；而对于创建完毕的Bean将从“当前创建Bean池”中清除掉。
+
+Spring容器先创建单例StudentA，StudentA依赖StudentB，然后将A放在**“当前创建Bean池”**中，此时创建 StudentB，StudentB 依赖 StudentC ，然后将B放在**“当前创建Bean池”**中，此时创建StudentC，StudentC又依赖StudentA， 但是，此时Student已经在池中，所以会报错，因为在池中的Bean都是未初始化完的，所以会依赖错误 （初始化完的Bean会从池中移除）。
+
+setter方式 - 单例(singleton)
+
+Spring是先将Bean对象实例化之后再设置对象属性的
+
+![img](https://cos.duktig.cn/typora/202112301515674.png)
+
+**为什么用set方式就不报错了呢 ？**
+
+我们结合上面那张图看，Spring先是用构造实例化Bean对象 ，此时Spring会将这个实例化结束的对象放到一个Map中，并且Spring提供了获取这个未设置属性的实例化对象引用的方法。 结合我们的实例来看，当Spring实例化了StudentA、StudentB、StudentC后，紧接着会去设置对象的属性，此时StudentA依赖StudentB，就会去Map中取出存在里面的单例StudentB对象，以此类推，不会出来循环的问题喽。
+
+**为什么原型模式就报错了呢 ？**
+
+对于“prototype”作用域Bean，Spring容器无法完成依赖注入，因为“prototype”作用域的Bean，Spring容器不进行缓存，因此无法提前暴露一个创建中的Bean。
+
+[面试中被问Spring循环依赖的三种方式！！！ ](https://www.cnblogs.com/jajian/p/10241932.html)
+
 ## 8. 为什么要三级缓存？二级不行吗？
 
 不可以，主要是为了生成代理对象。

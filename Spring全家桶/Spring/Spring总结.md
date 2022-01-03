@@ -559,7 +559,7 @@ import org.springframework.transaction.TransactionDefinition;
 
 public enum Propagation {
 
-    // （默认值）如果当前没有事务，就创建一个新事务，如果当前存在事务，就加入该事务，该设置是最常用的设置。
+    // （默认值）如果当前存在事务，就加入该事务，如果当前没有事务，就创建一个新事务，（该设置是最常用的设置）。
     REQUIRED(TransactionDefinition.PROPAGATION_REQUIRED),
 	
     // 支持当前事务，如果当前存在事务，就加入该事务，如果当前不存在事务，就以非事务执行。
