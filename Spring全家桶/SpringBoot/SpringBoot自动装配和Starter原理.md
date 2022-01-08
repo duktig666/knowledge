@@ -823,6 +823,8 @@ public class ThreadPoolAutoConfiguration {
 
 ### 第3步：创建`resources/META-INF/spring.factories` 文件，设置需要自动配置的类
 
+关键的扩展点 key 为  `EnableAutoConfiguration`
+
 ```java
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
     cn.duktig.threadpool.config.ThreadPoolAutoConfiguration
@@ -896,6 +898,76 @@ Author{name='duktig', age=23, email='duktig666@163.com'}
 从结果上看，我们**在自定义starter的工程中，自定义的配置，在新工程中可以被自动装配**。
 
 测试通过。
+
+## 8. Spring.factory 详解
+
+Spring Boot中有一种非常解耦的扩展机制：Spring Factories。这种扩展机制实际上是仿照Java中的SPI扩展机制来实现的。
+
+### 什么是 SPI机制
+
+SPI ，全称为 Service Provider Interface，是一种服务发现机制。
+
+使用Java SPI机制的优势是实现解耦，使得第三方服务模块的装配控制的逻辑与调用者的业务代码分离，实现解耦。我们的应用程序可以根据实际业务情况启用框架扩展或替换框架组件。
+
+### Spring Boot中的SPI机制
+
+在SpringBoot中也有一种类似与Java SPI的加载机制。它在`resources/META-INF/spring.factories`文件中配置接口的实现类名称，然后在程序中读取这些配置文件并实例化。 这种自定义的SPI机制是Spring Boot Starter实现的基础。
+
+### Spring Factories实现原理
+
+spring-core包里定义了SpringFactoriesLoader类，这个类实现了检索META-INF/spring.factories文件，并获取指定接口的配置的功能。在这个类中定义了两个对外的方法：
+
+- loadFactories 根据接口类获取其实现类的实例，这个方法返回的是对象列表。
+- loadFactoryNames 根据接口获取其接口类的名称，这个方法返回的是类名的列表。
+
+上面的两个方法的关键都是从指定的ClassLoader中获取spring.factories文件，并解析得到类名列表
+
+```java
+private static Map<String, List<String>> loadSpringFactories(@Nullable ClassLoader classLoader) {
+    MultiValueMap<String, String> result = cache.get(classLoader);
+    if (result != null) {
+        return result;
+    }
+
+    try {
+        Enumeration<URL> urls = (classLoader != null ?
+                                 classLoader.getResources(FACTORIES_RESOURCE_LOCATION) :
+                                 ClassLoader.getSystemResources(FACTORIES_RESOURCE_LOCATION));
+        result = new LinkedMultiValueMap<>();
+        while (urls.hasMoreElements()) {
+            URL url = urls.nextElement();
+            UrlResource resource = new UrlResource(url);
+            Properties properties = PropertiesLoaderUtils.loadProperties(resource);
+            for (Map.Entry<?, ?> entry : properties.entrySet()) {
+                String factoryClassName = ((String) entry.getKey()).trim();
+                for (String factoryName : StringUtils.commaDelimitedListToStringArray((String) entry.getValue())) {
+                    result.add(factoryClassName, factoryName.trim());
+                }
+            }
+        }
+        cache.put(classLoader, result);
+        return result;
+    }
+    catch (IOException ex) {
+        throw new IllegalArgumentException("Unable to load factories from location [" +
+                                           FACTORIES_RESOURCE_LOCATION + "]", ex);
+    }
+}
+```
+
+从代码中我们可以知道，在这个方法中会遍历整个ClassLoader中所有jar包下的spring.factories文件。也就是说我们可以在自己的jar中配置spring.factories文件，不会影响到其它地方的配置，也不会被别人的配置覆盖。
+
+spring.factories的是通过Properties解析得到的，所以我们在写文件中的内容都是安装下面这种方式配置的：
+
+```csharp
+com.xxx.interface=com.xxx.classname
+```
+
+如果一个接口希望配置多个实现类，可以使用 `,` 进行分割。
+
+spring.factories支持的key 以及扩展点顺序 参看：[Spring boot源码初识一 spring.factories扩展点](https://blog.csdn.net/u010883443/article/details/115397375?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_title~default-9.no_search_link&spm=1001.2101.3001.4242.6&utm_relevant_index=12)
+
+
 
 ## 参看：
 

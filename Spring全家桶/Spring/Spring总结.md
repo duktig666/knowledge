@@ -854,10 +854,6 @@ private void method1() {
 
 在 `@Transactional` 注解中如果不配置`rollbackFor`属性,那么事务只会在遇到`RuntimeException`的时候才会回滚，加上 `rollbackFor=Exception.class`,可以让事务在遇到非运行时异常时也回滚。
 
-## Spring的自动装配
-
-
-
 ## Spring 框架中用到了哪些设计模式？
 
 - **工厂模式** : Spring 使用工厂模式通过 `BeanFactory`、`ApplicationContext` 创建 bean 对象。
