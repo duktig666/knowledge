@@ -144,6 +144,32 @@ try {
 2. ServerBootstrap 通常使⽤ `bind()` ⽅法绑定本地的端⼝上，然后等待客户端的连接。
 3. Bootstrap 只需要配置⼀个线程组— `EventLoopGroup` ,⽽ ServerBootstrap 需要配置两个线程组— EventLoopGroup ，⼀个⽤于接收连接，⼀个⽤于具体的处理。
 
+## Netty的整体流程
+
+整体流程如下所示(图中没有包含关闭的部分)：
+
+![image-20220110103425139](C:\Users\rsw\AppData\Roaming\Typora\typora-user-images\image-20220110103425139.png)
+
+1. Netty抽象出两组线程池BossGroup专门负责接收客户端的连接, WorkerGroup 专门负责网络的读写
+2. BossGroup和 WorkerGroup类型都是NioEventLoopGroup
+3. NioEventLoopGroup相当于一个事件循环组,这个组中含有多个事件循环﹐每一个事件循环是 NioEventLoop
+4. NioEventLoop表示一个不断循环的执行处理任务的线程，每个NioEventLoop 都有一个selector ,用于监听绑
+   定在其上的socket的网络通讯
+5. NioEventLoopGroup可以有多个线程，即可以含有多个NioEventLoop
+6. 每个Boss NioEventLoop循环执行的步骤有3步
+   1. 轮询accept事件
+   2. 处理accept事件 ,与client建立连接﹐生成NioScocketChannel，并将其注册到某个worker NIOEventLoop 上的selector
+   3. 处理任务队列的任务，即runAllTasks
+7. 每个Worker NIOEventLoop 循环执行的步骤
+   1. 轮询read, write事件
+   2. 处理ilo事件，即 read , write事件，在对应NioScocketChannel
+   3. 处理处理任务队列的任务，即runAllTasks
+8. 每个Worker NIOEventLoop处理业务时,会使用pipeline(管道), pipeline中包含了channel，即通过pipeline可以获取到对应通道，管道中维护了很多的处理器
+
+参看：[一文看透Netty执行流程全解析](https://zhuanlan.zhihu.com/p/362362169)
+
+
+
 ## 什么是 Netty 的零拷贝？
 
 > 维基百科是这样介绍零拷贝的：
