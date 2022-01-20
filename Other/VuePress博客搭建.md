@@ -191,10 +191,9 @@ npm run deploy
 
 
 
-
-
 ## 参看
 
 - [vuepress-theme-reco](https://vuepress-theme-reco.recoluan.com/)
 - [手把手教你使用 VuePress 搭建个人博客](https://www.cnblogs.com/softidea/p/10084946.html) （文中含有部署相关）
 - [使用 GitHub Actions 自动部署博客](https://vuepress-theme-reco.recoluan.com/views/other/github-actions.html)
+- [从hexo到vuepress](https://www.mhynet.cn/blog-hexo-to-vuepress/#hexo)
