@@ -339,91 +339,199 @@ SELECT * FROM student WHERE class IN ("95033","95031");
 
 **26、查询存在有85分以上成绩的课程Cno.**
 
-
+```sql
+SELECT cno FROM score GROUP BY cno HAVING MAX(DEGREE )> 85;
+```
 
 **27、查询出“计算机系“教师所教课程的成绩表。**
 
-
+```sql
+SELECT * FROM score WHERE cno IN 
+	(SELECT cno FROM teacher t LEFT JOIN course c ON t.tno = c.tno WHERE t.depart = '计算机系')；
+```
 
 **28、查询“计算机系”与“电子工程系“不同职称的教师的Tname和Prof**
 
-
+```sql
+SELECT 
+  tname,prof
+FROM teacher 
+WHERE depart = '计算机系' AND prof NOT IN (
+  SELECT prof
+  FROM teacher 
+  WHERE depart = '电子工程系'
+);
+```
 
 **29、查询选修编号为“3-105“课程且成绩至少高于选修编号为“3-245”的同学的Cno、Sno和Degree,并按Degree从高到低次序排序。**
 
-
+```sql
+SELECT sno,cno,degree FROM score 
+WHERE cno = '3-105' AND  
+	degree > ANY(SELECT degree FROM score WHERE cno = '3-245') 
+	ORDER BY degree DESC;
+```
 
 **30、查询选修编号为“3-105”且成绩高于选修编号为“3-245”课程的同学的Cno、Sno和Degree.**
 
+```sql
 
+SELECT sno,cno,degree FROM score 
+WHERE cno = '3-105' AND  
+	degree > ALL(SELECT degree FROM score WHERE cno = '3-245');
+```
 
 **31、查询所有教师和同学的name、sex和birthday.**
 
-
+```sql
+SELECT 
+  tname     name,
+  tsex     sex,
+  tbirthday birthday
+FROM teacher 
+UNION
+SELECT 
+  sname     name,
+  ssex      sex,
+  sbirthday birthday
+FROM student;
+```
 
 **32、查询所有“女”教师和“女”同学的name、sex和birthday.**
 
-
+```sql
+SELECT 
+  tname     name,
+  tsex     sex,
+  tbirthday birthday
+FROM teacher 
+WHERE tsex = '女'
+UNION
+SELECT 
+  sname     name,
+  ssex      sex,
+  sbirthday birthday
+FROM student
+WHERE ssex = '女';
+```
 
 **33、查询成绩比该课程平均成绩低的同学的成绩表。**
 
-
+```sql
+SELECT s1.* FROM score s1 
+WHERE degree < (
+    SELECT AVG(degree ) FROM score s2 
+    WHERE s1.cno = s2.cno);
+```
 
 **34、查询所有任课教师的Tname和Depart.**
 
+```sql
+SELECT 
+  tname,depart
+FROM teacher t
+WHERE EXISTS(SELECT tno
+             FROM course c
+             WHERE t.TNO = c.TNO);
+```
 
+```sql
+SELECT 
+  tname,depart
+FROM teacher t
+WHERE tno IN(SELECT tno
+                  FROM course);
+```
 
 **35、查询所有未讲课的教师的Tname和Depart.**
 
+```sql
+SELECT 
+  tname,depart
+FROM teacher t
+WHERE NOT EXISTS(SELECT tno
+             FROM course c
+             WHERE t.TNO = c.TNO);
+```
 
+```sql
+SELECT 
+  tname,depart
+FROM teacher t
+WHERE tno NOT IN(SELECT tno
+                  FROM course);
+```
 
 **36、查询至少有2名男生的班号。**
 
-
+```sql
+SELECT class FROM student WHERE ssex = '男' GROUP BY class HAVING COUNT(class) >= 2;	
+```
 
 **37、查询Student表中不姓“王”的同学记录。**
 
-
+```sql
+SELECT * FROM student WHERE sname NOT LIKE '王%';
+```
 
 **38、查询Student表中每个学生的姓名和年龄。**
 
-
+```sql
+SELECT sname,YEAR(NOW())-YEAR(sbirthday) FROM student;
+```
 
 **39、查询Student表中最大和最小的Sbirthday日期值。**
 
-
+```sql
+SELECT MAX(sbirthday) max_sbirthday,MIN(sbirthday) min_sbirthday FROM student;
+```
 
 **40、以班号和年龄从大到小的顺序查询Student表中的全部记录。**
 
-
+```sql
+SELECT * FROM student ORDER BY class DESC,YEAR(NOW())-YEAR(sbirthday) DESC;
+```
 
 **41、查询“男”教师及其所上的课程。**
 
-
+```sql
+SELECT c.* FROM teacher t LEFT JOIN course c ON t.tno = c.tno WHERE t.tsex = '男';
+```
 
 **42、查询最高分同学的Sno、Cno和Degree列。**
 
-
+```sql
+SELECT
+  sno,
+  cno,
+  degree
+FROM score
+WHERE DEGREE = (SELECT MAX(degree)
+                FROM score);
+```
 
 **43、查询和“李军”同性别的所有同学的Sname.**
 
-
+```sql
+SELECT sname FROM student WHERE ssex = (SELECT ssex FROM student WHREE sname = '李军');
+```
 
 **44、查询和“李军”同性别并同班的同学Sname.**
 
-
+```sql
+SELECT sname FROM student WHERE (ssex, class) = (SELECT ssex,class FROM student WHREE sname = '李军');
+```
 
 **45、查询所有选修“计算机导论”课程的“男”同学的成绩表**
 
+```sql
+SELECT *
+FROM score, student
+WHERE score.SNO = student.SNO and ssex = '男' and cno = (
+  SELECT cno
+  FROM course
+  WHERE cname = '计算机导论');
+```
 
 
-**46、使用游标方式来同时查询每位同学的名字，他所选课程及成绩。**
-
-
-
-**47、 声明触发器指令，每当有同学转换班级时执行触发器显示当前和之前所在班级。**
-
-
-
-**48、 删除已设置的触发器指令**
 
