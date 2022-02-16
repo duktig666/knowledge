@@ -14,7 +14,9 @@
 
 ②salve从库连接master主库，Master有多少个slave就会创建多少个binlog dump线程。
 
-③当Master节点的binlog发生变化时，binlog dump 线程会通知所有的salve节点，并将相应的binlog内容推送给slave节点。
+③当Mas00
+
+ter节点的binlog发生变化时，binlog dump 线程会通知所有的salve节点，并将相应的binlog内容推送给slave节点。
 
 ④I/O线程接收到 binlog 内容后，将内容写入到本地的 relay-log。
 
