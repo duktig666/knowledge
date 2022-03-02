@@ -146,3 +146,11 @@ public class KafkaConsumer {
 **测试**
 
 ![image-20220222215803067](https://cos.duktig.cn/typora/202202222158645.png)
+
+
+
+参看：
+
+- [SpringBoot集成kafka全面实战](https://blog.csdn.net/yuanlong122716/article/details/105160545/)
+- [kafka学习（五）Spring Boot 整合 kafka ](https://www.cnblogs.com/riches/p/11720068.html)
+
