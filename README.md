@@ -1,4 +1,11 @@
 # knowledge
+
+## ！重要
+
+本仓库已不再维护（2022.03.09），全新仓库内容已迁移至新仓库：[https://github.com/duktig666/duktig666.github.io](https://github.com/duktig666/duktig666.github.io)
+
+或者可以直接访问我的个人博客：[https://www.duktig.cn/](https://www.duktig.cn/)
+
 ## 简介
 
 > Java全栈相关的【知识/技术/解决方案/难题/面试题】知识库。
